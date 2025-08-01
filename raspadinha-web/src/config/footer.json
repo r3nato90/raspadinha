@@ -1,0 +1,60 @@
+{
+  "sections": [
+    {
+      "title": "Links Rápidos",
+      "links": [
+        {
+          "label": "Como Funciona",
+          "href": "#como-funciona"
+        },
+        {
+          "label": "Raspadinhas",
+          "href": "#raspadinhas"
+        },
+        {
+          "label": "Depoimentos",
+          "href": "#depoimentos"
+        }
+      ]
+    },
+    {
+      "title": "Suporte",
+      "links": [
+        {
+          "label": "Central de Ajuda",
+          "href": "#ajuda"
+        },
+        {
+          "label": "Contato",
+          "href": "#contato"
+        },
+        {
+          "label": "Termos de Uso",
+          "href": "#termos"
+        },
+        {
+          "label": "Privacidade",
+          "href": "#privacidade"
+        }
+      ]
+    }
+  ],
+  "security": [
+    {
+      "icon": "Lock",
+      "label": "SSL Seguro"
+    },
+    {
+      "icon": "ShieldCheck",
+      "label": "Plataforma Regulamentada"
+    },
+    {
+      "icon": "CreditCard",
+      "label": "Pagamento Seguro"
+    }
+  ],
+  "company": {
+    "cnpj": "65.164.519/0001-50",
+    "year": "2025"
+  }
+}

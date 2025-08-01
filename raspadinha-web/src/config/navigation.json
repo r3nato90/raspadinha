@@ -1,0 +1,32 @@
+{
+  "navigation": [
+    {
+      "id": "como-funciona",
+      "label": "Como Funciona",
+      "href": "#como-funciona",
+      "icon": "HelpCircle"
+    },
+    {
+      "id": "raspadinhas",
+      "label": "Raspadinhas",
+      "href": "#raspadinhas",
+      "icon": "Gamepad2"
+    },
+    {
+      "id": "premios",
+      "label": "Prêmios",
+      "href": "#premios",
+      "icon": "Trophy"
+    }
+  ],
+  "auth": {
+    "login": {
+      "label": "Login",
+      "href": "/login"
+    },
+    "register": {
+      "label": "Registrar",
+      "href": "/register"
+    }
+  }
+}

@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String      @id @unique @default(cuid())
+  name            String
+  password        String?
+  email           String      @unique
+  phone           String?     @unique
+  role            UserRole    @default(USER)
+  balance         Float       @default(0.0)
+  document        String?
+  referredByCode  String?
+
+  affiliateCode   String      @unique @map("affiliate_code")
+  affiliateRate   Float       @map("affiliate_rate")
+
+  transactions    Transaction[]
+  scratchGames    ScratchGame[]
+
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+  deletedAt       DateTime?   @map("deleted_at")
+
+  @@index([id, email], name: "user_index")
+  @@map("users")
+}
+
+model Transaction {
+  id                String            @id @unique @default(cuid())
+  externalId        String?           @map("external_id")
+  accountId         String            @map("account_id")
+  type              TransactionType
+  amount            Float
+  paymentMethod     PaymentMethods?   @map("payment_method")
+  description       String
+  pix               String?
+  reference         String?
+  status            TransactionStatus
+  prizes            Json?
+  metadata          Json?
+  
+  scratchCardId     String?           @map("scratch_card_id")
+  scratchCard       ScratchCards?     @relation(fields: [scratchCardId], references: [id])
+  scratchGames      ScratchGame[]
+
+  user              User              @relation(fields: [accountId], references: [id])
+
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  paidAt            DateTime?         @map("paid_at")
+  deletedAt         DateTime?         @map("deleted_at")
+
+  @@index([id, accountId])
+  @@map("transactions")
+}
+
+model ScratchCards {
+  id              String           @id @unique @default(cuid())
+  amount          Float
+  name            String
+  description     String
+  image           String
+  status          ScratchStatus
+  rtp             Int
+
+  transactions    Transaction[]
+  prizes          ScratchPrize[]
+  scratchGames    ScratchGame[]
+
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  deletedAt       DateTime?        @map("deleted_at")
+
+  @@map("scratch_cards")
+}
+
+model ScratchPrize {
+  id            String             @id @default(cuid())
+  scratchCard   ScratchCards       @relation(fields: [scratchCardId], references: [id])
+  scratchCardId String
+
+  image         String
+  name          String
+  description   String
+  type          ScratchPrizeType
+  value         Float
+  rtp           Int
+
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  deletedAt     DateTime?          @map("deleted_at")
+
+  @@map("scratch_prizes")
+}
+
+model ScratchGame {
+  id             String         @id @default(cuid())
+  userId         String
+  scratchCardId  String
+  transactionId  String
+  positions      Json           @default("[]")
+  prizeId        String?
+  status         String         @default("ACTIVE")
+  completedAt    DateTime?
+
+  user           User           @relation(fields: [userId], references: [id])
+  scratchCard    ScratchCards   @relation(fields: [scratchCardId], references: [id])
+  transaction    Transaction    @relation(fields: [transactionId], references: [id])
+
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  deletedAt     DateTime?          @map("deleted_at")
+
+  @@map("scratch_game")
+}
+
+model Settings {
+  id              String     @id @default(cuid())
+  siteName        String
+  logo            String
+  primaryColor    String
+  secondaryColor  String
+  favicon         String
+
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  deletedAt     DateTime?          @map("deleted_at")
+
+  @@map("settings")
+}
+
+model Banners {
+  id        String     @id @default(cuid())
+  title     String
+  image     String
+  link      String
+  active    Boolean @default(true)
+  order     Int     @default(0)
+
+  createdAt     DateTime           @default(now()) @map("created_at")
+  updatedAt     DateTime           @updatedAt @map("updated_at")
+  deletedAt     DateTime?          @map("deleted_at")
+
+  @@map("banners")
+}
+
+enum ScratchPrizeType {
+  MONEY
+}
+
+enum ScratchStatus {
+  INACTIVE
+  ACTIVE
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum PaymentMethods {
+  PIX
+}
+
+enum TransactionType {
+  BET
+  WIN
+  INDICATION
+  VERIFY
+  PAYMENT
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  APPROVED
+  WAITING_GATEWAY
+  REJECTED
+  DISPUTE
+  ERROR
+}
